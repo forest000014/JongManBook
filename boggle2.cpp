@@ -72,9 +72,9 @@ void solve(void){
     for(int i = 2; i <= L; ++i){
         bool hasFound = false;
         for(int j = 0; j < alphabet[word[i] - 'A' + 1].size(); ++j){
+            int r = alphabet[word[i] - 'A' + 1][j].r;
+            int c = alphabet[word[i] - 'A' + 1][j].c;
             for(int k = 0; k < 8; ++k){
-                int r = alphabet[word[i] - 'A' + 1][j].r;
-                int c = alphabet[word[i] - 'A' + 1][j].c;
                 int pr = r + dr[k];
                 int pc = c + dc[k];
                 if(pr < 1 || pr > MAX_R || pc < 1 || pc > MAX_C) continue;
