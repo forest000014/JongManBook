@@ -66,7 +66,6 @@ void solve(void){
     for(int i = 0; i < alphabet[word[1] - 'A' + 1].size(); ++i){
         DP[alphabet[word[1] - 'A' + 1][i].r][alphabet[word[1] - 'A' + 1][i].c] = 1;
     }
-    
     //printDP(); // [DEBUG]
 
     for(int i = 2; i <= L; ++i){
@@ -79,7 +78,6 @@ void solve(void){
                 int pc = c + dc[k];
                 if(pr < 1 || pr > MAX_R || pc < 1 || pc > MAX_C) continue;
                 if(DP[pr][pc] != i - 1) continue;
-                //DP[r][c] = i;
                 POS tmp = {r, c};
                 toBeUpdated.push(tmp);
                 hasFound = true;
