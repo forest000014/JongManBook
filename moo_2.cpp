@@ -1,4 +1,4 @@
-#define DEBUG_MODE 01
+#define DEBUG_MODE 0
 #define DEBUG if(DEBUG_MODE)
 
 #include <stdio.h>
@@ -17,6 +17,10 @@ using namespace std;
 #define EPE  3
 
 
+vector <string> tokens;
+map <string, int> varTable;
+const int MOD = (int)(1e9 + 7);
+
 class Expr{
 public:
     int type;
@@ -26,6 +30,18 @@ public:
     int eval;
     string var;
     Expr *left, *right;
+
+    void compile(void){
+        if(type == LIT){} // nothing to do
+        else if(type == VAR){
+            eval = varTable[var];
+        }
+        else if(type == EPE){
+            (*left).compile();
+            (*right).compile();
+            eval = (left->eval + right->eval) % MOD;
+        }
+    }
 };
 
 class Stat{
@@ -39,12 +55,27 @@ public:
     Stat *iterStat;
     Expr *expr;
     string var;
-};
 
-vector <string> tokens;
-Stat root;
-map <string, int> varTable;
-const int MOD = (int)(1e9 + 7);
+    void compile(void){
+        if(type == ASSG){
+            (*expr).compile();
+            varTable[var] = expr->eval;
+        }
+        else if(type == ITER){
+            for(int i = 1; i <= loop; ++i){
+                (*iterStat).compile(); // Q. 백준 시간 제한 2초까지 어떻게 줄일 것인가? (~2억번 이내 연산. but 100,000 * 100,000 > 20,000,000)
+            }
+        }
+        else if(type == RETN){
+            cout << varTable[var] << endl;
+            return;
+        }
+
+        if(next != NULL){
+            (*next).compile();
+        }
+    }
+};
 
 
 void printTokens(void){ // [DEBUG]
@@ -164,46 +195,13 @@ int parseStat(int tp, Stat *now){ // tp : 현재 파싱해야할 token의 index
 }
 
 
-void compileExpr(Expr *now){
-    if(now->type == LIT){} // nothing to do
-    else if(now->type == VAR){
-        now->eval = varTable[now->var];
-    }
-    else if(now->type == EPE){
-        compileExpr(now->left);
-        compileExpr(now->right);
-        now->eval = (now->left->eval + now->right->eval) % MOD;
-    }
-}
-
-
-void compileStat(Stat *now){
-    if(now->type == ASSG){
-        compileExpr(now->expr);
-        varTable[now->var] = now->expr->eval;
-    }
-    else if(now->type == ITER){
-        for(int i = 1; i <= now->loop; ++i){
-            compileStat(now->iterStat); // Q. 백준 시간 제한 2초까지 어떻게 줄일 것인가? (~2억번 이내 연산. but 100,000 * 100,000 > 20,000,000)
-        }
-    }
-    else if(now->type == RETN){
-        cout << varTable[now->var] << endl;
-        return;
-    }
-
-    if(now->next != NULL){
-        compileStat(now->next);
-    }
-}
-
-
 int main(void){
     freopen("moo_input.txt", "r", stdin);
 
+    Stat root;
     lex();
     parseStat(0, &root);
-    compileStat(&root);
+    root.compile();
 
     return 0;
 }
