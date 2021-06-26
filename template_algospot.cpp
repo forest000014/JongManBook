@@ -1,7 +1,5 @@
 #include <stdio.h>
-#include <string.h>
-#include <vector>
-#include <queue>
+#include <algorithm>
 using namespace std;
 
 
@@ -23,11 +21,14 @@ void inputData(void){
 
 
 void solve(void){
+
 }
+
 
 void printAns(void) {
     printf("%d\n", ans);
 }
+
 
 int main(void){
     freopen("picnic_input.txt", "rb", stdin);
