@@ -151,7 +151,7 @@ int parseExpr(int tp, Expr *now){
         now->right = new Expr();
         tp = parseExpr(tp + 3, now->right);
     }
-    else {} // [ERROR]
+    else {} // [ERROR EXCEPTION]
 
     return tp + 1;
 }
